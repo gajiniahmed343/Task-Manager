@@ -24,6 +24,9 @@ public class TaskEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dueDate;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")  // Foreign key referencing User entity
+    private User user;
     // Constructors, getters, and setters
     public TaskEntity() {}
 

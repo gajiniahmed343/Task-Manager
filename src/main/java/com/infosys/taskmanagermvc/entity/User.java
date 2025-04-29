@@ -23,6 +23,16 @@ public class User {
 
     private String fullname;
 
+    private String role = "USER";
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     public String getFullname() {
         return fullname;
     }

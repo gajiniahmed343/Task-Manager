@@ -22,11 +22,16 @@ public class CustomUserDetailsService implements org.springframework.security.co
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User with email: " + email + " not found"));
 
-        // Map User entity to UserDetails object for Spring Security
+        // Assuming the role is 'USER' for all users, we will assign 'ROLE_USER' to the user
+        // If you store roles in your database, you can fetch them dynamically as well
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole());
+
+
+        // Map User entity to UserDetails object for Spring Security with ROLE_USER
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),
-                Collections.emptyList() // Assume all users have ROLE_USER
+                Collections.singletonList(authority) // Assign ROLE_USER to the user
         );
     }
 }

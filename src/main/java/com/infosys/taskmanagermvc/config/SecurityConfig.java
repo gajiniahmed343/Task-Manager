@@ -55,7 +55,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/", "/login", "/register").permitAll()  // Public routes
-                                .requestMatchers("/tasks/**").authenticated()  // Task routes require authentication
+                                .requestMatchers("/tasks/**").hasRole("USER") // This checks for ROLE_USER
+                                .anyRequest().authenticated() // Task routes require authentication
                 )
                 .formLogin(formLogin ->
                         formLogin

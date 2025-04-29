@@ -123,16 +123,39 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.findByUserAndDueDateBetween(currentUser, startDate, endDate);
     }
 
+//    @Override
+//    public List<TaskEntity> filterTasks(Status status, Priority priority, LocalDate startDate, LocalDate endDate) {
+//        User currentUser = getCurrentAuthenticatedUser();
+//        return taskRepository.findAll().stream()
+//                .filter(task -> task.getUser().equals(currentUser)) // Ensure the task belongs to the current user
+//                .filter(task -> status == null || task.getStatus() == status)
+//                .filter(task -> priority == null || task.getPriority() == priority)
+//                .filter(task -> {
+//                    if (startDate == null && endDate == null) return true;
+//                    LocalDate dueDate = task.getDueDate();
+//                    return (startDate == null || !dueDate.isBefore(startDate)) &&
+//                            (endDate == null || !dueDate.isAfter(endDate));
+//                })
+//                .toList();
+//    }
     @Override
     public List<TaskEntity> filterTasks(Status status, Priority priority, LocalDate startDate, LocalDate endDate) {
         User currentUser = getCurrentAuthenticatedUser();
+    
+        System.out.println("Filtering tasks for user: " + currentUser.getEmail());
+        System.out.println("Status: " + status);
+        System.out.println("Priority: " + priority);
+        System.out.println("StartDate: " + startDate);
+        System.out.println("EndDate: " + endDate);
+
         return taskRepository.findAll().stream()
-                .filter(task -> task.getUser().equals(currentUser)) // Ensure the task belongs to the current user
+                .filter(task -> task.getUser().equals(currentUser))
                 .filter(task -> status == null || task.getStatus() == status)
                 .filter(task -> priority == null || task.getPriority() == priority)
                 .filter(task -> {
-                    if (startDate == null && endDate == null) return true;
                     LocalDate dueDate = task.getDueDate();
+                    if (dueDate == null) return false;
+                    if (startDate == null && endDate == null) return true;
                     return (startDate == null || !dueDate.isBefore(startDate)) &&
                             (endDate == null || !dueDate.isAfter(endDate));
                 })

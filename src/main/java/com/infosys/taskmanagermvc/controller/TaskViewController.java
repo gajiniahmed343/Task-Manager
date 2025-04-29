@@ -80,7 +80,7 @@ public class TaskViewController {
     @PostMapping("/delete/{id}")
     public String deleteTask(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            System.out.println("Deleting task with ID: " + id);  // Debugging log
+//            System.out.println("Deleting task with ID: " + id);  // Debugging log
             taskService.deleteTask(id);
             redirectAttributes.addFlashAttribute("message", "Task deleted successfully!");
         } catch (RuntimeException e) {

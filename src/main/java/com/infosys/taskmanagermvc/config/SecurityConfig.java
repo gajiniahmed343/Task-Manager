@@ -50,7 +50,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/login", "/register", "/tasks/filter/*")  // Disable CSRF for login and register
+                        .ignoringRequestMatchers("/login", "/register", "/tasks/filter/**")  // Disable CSRF for login and register
                 )
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests

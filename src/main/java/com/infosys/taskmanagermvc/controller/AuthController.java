@@ -54,6 +54,7 @@ public class AuthController {
         String encodedPwd = pwdEncoder.encode(user.getPassword());
         user.setPassword(encodedPwd);
 
+        user.setRole("USER");
         // Save the user to the repository
         repo.save(user);
 

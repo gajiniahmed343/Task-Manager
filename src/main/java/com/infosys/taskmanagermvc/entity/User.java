@@ -23,7 +23,8 @@ public class User {
 
     private String fullname;
 
-    private String role = "USER";
+    @Column(nullable = false, columnDefinition = "VARCHAR(255) DEFAULT 'USER'")
+    private String role;
 
     public String getRole() {
         return role;

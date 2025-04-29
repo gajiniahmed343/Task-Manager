@@ -19,10 +19,19 @@ public class User {
     private String email;  // Use email instead of username
 
     @NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password should have at least 8 characters")
     private String password;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private String fullname;
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<TaskEntity> tasks;  // Assume TaskEntity has a 'user' field mapping back to User
 
     public Long getId() {

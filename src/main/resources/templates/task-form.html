@@ -4,51 +4,75 @@
     <title>Task Form</title>
     <link rel="stylesheet"
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .form-container {
+            max-width: 700px;
+            margin: auto;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group label span {
+            color: red;
+        }
+    </style>
 </head>
 <body>
 
 <div class="container mt-5">
-    <h2 th:text="${task.id != null} ? 'Edit Task' : 'Create New Task'"></h2>
+    <div class="form-container">
+        <h3 class="mb-4 text-center" th:text="${task.id != null} ? 'Edit Task' : 'Create New Task'"></h3>
 
-    <form th:action="@{/tasks}" th:object="${task}" method="post">
-        <input type="hidden" th:field="*{id}"/>
+        <form th:action="@{/tasks}" th:object="${task}" method="post">
+            <input type="hidden" th:field="*{id}"/>
 
-        <div class="form-group">
-            <label for="title">Title</label>
-            <input type="text" th:field="*{title}" class="form-control" id="title" placeholder="Enter title" required/>
-        </div>
+            <div class="form-group mb-3">
+                <label for="title">Title <span>*</span></label>
+                <input type="text" th:field="*{title}" class="form-control" id="title" placeholder="Enter title" required/>
+            </div>
 
-        <div class="form-group">
-            <label for="description">Description</label>
-            <textarea th:field="*{description}" class="form-control" id="description" placeholder="Enter description" required></textarea>
-        </div>
+            <div class="form-group mb-3">
+                <label for="description">Description <span>*</span></label>
+                <textarea th:field="*{description}" class="form-control" id="description" placeholder="Enter description" rows="3" required></textarea>
+            </div>
 
-        <div class="form-group">
-            <label for="priority">Priority</label>
-            <select th:field="*{priority}" class="form-control" id="priority" required>
-                <option th:each="priority : ${T(com.infosys.taskmanagermvc.entity.Priority).values()}"
-                        th:value="${priority}"
-                        th:text="${priority.name()}">Priority</option>
-            </select>
-        </div>
+            <div class="form-group mb-3">
+                <label for="priority">Priority <span>*</span></label>
+                <select th:field="*{priority}" class="form-control" id="priority" required>
+                    <option value="" disabled selected>Select priority</option>
+                    <option th:each="priority : ${T(com.infosys.taskmanagermvc.entity.Priority).values()}"
+                            th:value="${priority}"
+                            th:text="${priority.name()}">
+                    </option>
+                </select>
+            </div>
 
-        <div class="form-group">
-            <label for="status">Status</label>
-            <select th:field="*{status}" class="form-control" id="status" required>
-                <option th:each="status : ${T(com.infosys.taskmanagermvc.entity.Status).values()}"
-                        th:value="${status}"
-                        th:text="${status.name()}">Status</option>
-            </select>
-        </div>
+            <div class="form-group mb-3">
+                <label for="status">Status <span>*</span></label>
+                <select th:field="*{status}" class="form-control" id="status" required>
+                    <option value="" disabled selected>Select status</option>
+                    <option th:each="status : ${T(com.infosys.taskmanagermvc.entity.Status).values()}"
+                            th:value="${status}"
+                            th:text="${status.name()}">
+                    </option>
+                </select>
+            </div>
 
-        <div class="form-group">
-            <label for="dueDate">Due Date</label>
-            <input type="date" th:field="*{dueDate}" class="form-control" id="dueDate" required/>
-        </div>
+            <div class="form-group mb-4">
+                <label for="dueDate">Due Date <span>*</span></label>
+                <input type="date" th:field="*{dueDate}" class="form-control" id="dueDate" required/>
+            </div>
 
-        <button type="submit" class="btn btn-success">Save Task</button>
-        <a href="/tasks" class="btn btn-secondary ml-2">Cancel</a>
-    </form>
+            <div class="text-center">
+                <button type="submit" class="btn btn-success">Save Task</button>
+                <a href="/tasks" class="btn btn-secondary ml-2">Cancel</a>
+            </div>
+        </form>
+    </div>
 </div>
 
 </body>

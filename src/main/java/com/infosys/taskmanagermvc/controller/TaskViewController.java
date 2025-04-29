@@ -3,13 +3,19 @@ package com.infosys.taskmanagermvc.controller;
 import com.infosys.taskmanagermvc.entity.Priority;
 import com.infosys.taskmanagermvc.entity.Status;
 import com.infosys.taskmanagermvc.entity.TaskEntity;
+import com.infosys.taskmanagermvc.entity.User;
+import com.infosys.taskmanagermvc.repository.UserRepository;
 import com.infosys.taskmanagermvc.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -21,76 +27,84 @@ public class TaskViewController {
     @Autowired
     private TaskService taskService;
 
-    // Get all tasks
+    @Autowired
+    private UserRepository userRepository;
+
     @GetMapping
-    public String getAllTasks(Model model) {
-        model.addAttribute("tasks", taskService.getAllTasks());
+    public String getAllTasks(Model model, Principal principal) {
+//        String email = principal.getName(); // Gets the email used during login
+//
+//        // Fetch the user using Optional
+//        Optional<User> userOptional = userRepository.findByEmail(email);
+//
+//        // Check if the user exists and if so, add their full name to the model
+//        userOptional.ifPresent(user -> model.addAttribute("fullname", user.getFullname()));
+
+        model.addAttribute("tasks", taskService.getAllTasksForCurrentUser());
         return "task-list";
     }
 
-    // Create a new task
+
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("task", new TaskEntity());
         return "task-form";
     }
 
-    // Save a new task
     @PostMapping
-    public String saveTask(@ModelAttribute TaskEntity task) {
+    public String saveTask(@ModelAttribute TaskEntity task, RedirectAttributes redirectAttributes) {
         taskService.createTask(task);
+        redirectAttributes.addFlashAttribute("message", "Task created successfully!");
         return "redirect:/tasks";
     }
 
-    // Edit a task
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
         Optional<TaskEntity> task = taskService.getTaskById(id);
         if (task.isPresent()) {
             model.addAttribute("task", task.get());
+            return "task-form";
         } else {
-            model.addAttribute("error", true);  // Error if task not found
+            model.addAttribute("error", "Task not found.");
+            return "task-list";
         }
-        return "task-form";
     }
 
-    // Update a task
     @PostMapping("/update")
-    public String updateTask(@ModelAttribute TaskEntity task) {
+    public String updateTask(@ModelAttribute TaskEntity task, RedirectAttributes redirectAttributes) {
         taskService.updateTask(task.getId(), task);
+        redirectAttributes.addFlashAttribute("message", "Task updated successfully!");
         return "redirect:/tasks";
     }
 
-    // Delete a task
     @GetMapping("/delete/{id}")
-    public String deleteTask(@PathVariable Long id) {
-        taskService.deleteTask(id);
+    public String deleteTask(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            taskService.deleteTask(id);
+            redirectAttributes.addFlashAttribute("message", "Task deleted successfully!");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", "Error deleting task: " + e.getMessage());
+        }
         return "redirect:/tasks";
     }
 
-    // Filter tasks by priority
     @GetMapping("/filter/priority")
     public String filterByPriority(@RequestParam("priority") Priority priority, Model model) {
-        List<TaskEntity> tasks = taskService.getTasksByPriority(priority);
-        model.addAttribute("tasks", tasks);
+        model.addAttribute("tasks", taskService.getTasksByPriority(priority));
         return "task-list";
     }
 
-    // Filter tasks by status
     @GetMapping("/filter/status")
     public String filterByStatus(@RequestParam("status") Status status, Model model) {
-        List<TaskEntity> tasks = taskService.getTasksByStatus(status);
-        model.addAttribute("tasks", tasks);
+        model.addAttribute("tasks", taskService.getTasksByStatus(status));
         return "task-list";
     }
 
-    // Filter tasks by due date range
     @GetMapping("/filter/dueDate")
     public String filterByDueDate(@RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                   @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
                                   Model model) {
-        List<TaskEntity> tasks = taskService.getTasksByDueDateRange(startDate, endDate);
-        model.addAttribute("tasks", tasks);
+        model.addAttribute("tasks", taskService.getTasksByDueDateRange(startDate, endDate));
         return "task-list";
     }
 
@@ -108,5 +122,4 @@ public class TaskViewController {
         model.addAttribute("endDate", endDate);
         return "task-list";
     }
-
 }

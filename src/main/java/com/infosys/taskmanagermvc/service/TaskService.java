@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TaskService {
-    List<TaskEntity> getAllTasks();
+    List<TaskEntity> getAllTasksForCurrentUser();  // Add this method
+
     Optional<TaskEntity> getTaskById(Long id);
     TaskEntity createTask(TaskEntity task);
     TaskEntity updateTask(Long id, TaskEntity updatedTask);

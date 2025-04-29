@@ -3,21 +3,23 @@ package com.infosys.taskmanagermvc.repository;
 import com.infosys.taskmanagermvc.entity.Priority;
 import com.infosys.taskmanagermvc.entity.Status;
 import com.infosys.taskmanagermvc.entity.TaskEntity;
+import com.infosys.taskmanagermvc.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
-@Repository
 public interface TaskRepository extends JpaRepository<TaskEntity, Long> {
-    // Custom query to find tasks by priority
-    List<TaskEntity> findByPriority(Priority priority);
 
-    // Custom query to find tasks by status
-    List<TaskEntity> findByStatus(Status status);
+    // Find tasks by the user
+    List<TaskEntity> findByUser(User user);
 
-    // Custom query to find tasks by due date range
-    List<TaskEntity> findByDueDateBetween(LocalDate startDate, LocalDate endDate);
+    // Find tasks by user and priority
+    List<TaskEntity> findByUserAndPriority(User user, Priority priority);
+
+    // Find tasks by user and status
+    List<TaskEntity> findByUserAndStatus(User user, Status status);
+
+    // Find tasks by user and due date range
+    List<TaskEntity> findByUserAndDueDateBetween(User user, LocalDate startDate, LocalDate endDate);
 }

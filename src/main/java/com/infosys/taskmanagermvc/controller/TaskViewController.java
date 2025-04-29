@@ -111,10 +111,26 @@ public class TaskViewController {
     @GetMapping("/filter/combined")
     public String filterCombined(@RequestParam(required = false) Status status,
                                  @RequestParam(required = false) Priority priority,
-                                 @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-                                 @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+                                 @RequestParam(required = false) String startDate,
+                                 @RequestParam(required = false) String endDate,
                                  Model model) {
-        List<TaskEntity> tasks = taskService.filterTasks(status, priority, startDate, endDate);
+
+        LocalDate start = null;
+        LocalDate end = null;
+
+        try {
+            if (startDate != null && !startDate.isBlank()) {
+                start = LocalDate.parse(startDate);
+            }
+            if (endDate != null && !endDate.isBlank()) {
+                end = LocalDate.parse(endDate);
+            }
+        } catch (Exception e) {
+            model.addAttribute("error", "Invalid date format.");
+            return "task-list";
+        }
+
+        List<TaskEntity> tasks = taskService.filterTasks(status, priority, start, end);
         model.addAttribute("tasks", tasks);
         model.addAttribute("priority", priority);
         model.addAttribute("status", status);
